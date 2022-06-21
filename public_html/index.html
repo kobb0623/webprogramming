@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>채팅</title>
+        <link rel="stylesheet" href="/css/index.css">
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/index.js"></script>
+        <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=eu1xgedqvj&amp;submodules=geocoder"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <div id="main" >
+            <div id="chat">
+              <!-- 채팅 메시지 영역 -->
+            </div>
+            <div>
+              <input type="text" id="test" placeholder="메시지를 입력해주세요..">
+              <button onclick="send()">전송</button>
+            </div>
+          </div>
+    </body>
+    <script>
+        $(document).ready(async function(){
+            let XY = await getLocation();
+            var mapDiv = document.getElementById('map');
+            var mapOptions = {
+                center: new naver.maps.LatLng(XY.lat, XY.lng),
+                zoom: 14                        
+            }
+            var map = new naver.maps.Map(mapDiv, mapOptions);                 
+        });
+
+        async function getLocation() {
+            let XY = new Object();
+            if(navigator.geolocation) {
+
+                let promise = new Promise((resolve, rejected) => {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        resolve(position);
+                    });
+                });
+
+                let position = await promise;
+                XY.lat = position.coords.latitude;
+                XY.lng = position.coords.longitude;
+            }
+            return XY;            
+        }
+    </script>
+</html>
